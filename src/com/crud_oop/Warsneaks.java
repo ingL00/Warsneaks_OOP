@@ -1,4 +1,4 @@
-package crud_oop;
+package com.crud_oop;
 import java.util.ArrayList;
 
 public class Warsneaks implements Transaction{
@@ -44,8 +44,8 @@ public class Warsneaks implements Transaction{
     }
 
     @Override
-    public void beli(String index){
-        stockSepatu.remove(Integer.parseInt(index)-1);
+    public void beli(String index) {
+        stockSepatu.remove(Integer.parseInt(index) - 1);
     }
 
     public void findMaxLength(){
@@ -59,11 +59,14 @@ public class Warsneaks implements Transaction{
         }
     }
 
+    public void hapus(){
+        stockSepatu.clear();
+    }
+
     public void printBorder(){
         System.out.print("+");
         System.out.print("-".repeat(4)+"+");
         for(int i = 0; i < 4; i++){
-
             System.out.print("-".repeat(this.maxWidth + 1) + "+");
         }
 
@@ -75,6 +78,5 @@ public class Warsneaks implements Transaction{
             System.out.printf("|%-4s|%-"+maxWidth+"s |%-"+maxWidth+"s |%-"+maxWidth+"s |%-"+maxWidth+"s |", Integer.toString(i+1)+".", stockSepatu.get(i).getNama(), stockSepatu.get(i).getBrand(), stockSepatu.get(i).getHarga(), stockSepatu.get(i).getQty());
             System.out.println();
         }
-
     }
 }

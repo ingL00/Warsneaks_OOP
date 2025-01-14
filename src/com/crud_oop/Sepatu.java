@@ -1,4 +1,4 @@
-package crud_oop;
+package com.crud_oop;
 
 public class Sepatu{
     String nama;

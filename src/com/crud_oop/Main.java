@@ -1,17 +1,26 @@
-package crud_oop;
-import java.util.ArrayList;
-import java.util.Scanner;
+package com.crud_oop;
 
-interface Transaction{
-    void restock(String nama, String brand, String harga, String qty);
-    void check_stock();
-    void update_stock(String index, String nama, String brand, String harga, String qty);
-    void beli(String index);
-}
+import com.crud_oop.jdbc.PostgresQuery;
+
+import java.util.Scanner;
+import java.util.List;
+
+//Assignment CRUD Java OOP
+//
+//1.Sebuah array object menampung sepatu dengan total maksimal 10 produk (static final MAX_PRODUCT = 10)
+//2.Object sepatu memiliki attribute untuk menampung (Nama, Brand, Harga, Qty)
+//3.Terapkan konsep interface untuk Sepatu, dan implementasi interface pada service berikut:
+//  - Add Product
+//	- View Product
+//	- Update Product
+//	- Delete Product
+//4.Buat menu dengan konsep do while (kaya jaman kuliah)
 
 public class Main {
     public static void main(String[] args) {
+        PostgresQuery postgres = new PostgresQuery();
         Scanner scan = new Scanner(System.in);
+
         Warsneaks stock = new Warsneaks();
 
         // Switch Case Temporary Parameter
@@ -22,20 +31,26 @@ public class Main {
         String temp_qty = "";
 
         // Initial Stock
-        stock.restock("Gel Lyte III", "Asics", "3200", "1");
-        stock.restock("Vapor Fly", "Nike", "5000", "1");
-        stock.restock("Air Tuban III", "Nike", "10200", "1");
-        stock.restock("Cloud 5", "On Cloud", "3000", "1");
-        stock.restock("Predito", "Adidas", "3200", "1");
-        stock.restock("Chuck Taylor", "Converse", "700", "1");
-        stock.restock("Classic Slip-on", "Vans", "1200", "1");
-        stock.restock("Vapor Fly", "Nike", "5000", "1");
-        stock.restock("Gel Lyte III", "Asics", "3200", "1");
-        stock.restock("Vapor Fly", "Nike", "5000", "1");
+//        stock.restock("Gel Lyte III", "Asics", "3200", "1");
+//        stock.restock("Vapor Fly", "Nike", "5000", "1");
+//        stock.restock("Air Tuban III", "Nike", "10200", "1");
+//        stock.restock("Cloud 5", "On Cloud", "3000", "1");
+//        stock.restock("Predito", "Adidas", "3200", "1");
+//        stock.restock("Chuck Taylor", "Converse", "700", "1");
+//        stock.restock("Classic Slip-on", "Vans", "1200", "1");
+//        stock.restock("Vapor Fly", "Nike", "5000", "1");
+//        stock.restock("Gel Lyte III", "Asics", "3200", "1");
+//        stock.restock("Vapor Fly", "Nike", "5000", "1");
+
 
         String menu = "9999999";
         do{
             clrScreen();
+            stock.hapus();
+            List<Sepatu> sepatu = postgres.getAllSepatu();
+            sepatu.forEach(item -> {
+                stock.restock(item.getNama(), item.getBrand(), Integer.toString(item.getHarga()), Integer.toString(item.getQty()));
+            });
             stock.check_stock();
             System.out.println("Pilih Menu: ");
             System.out.println("1. Restock Sepatu");
@@ -47,11 +62,11 @@ public class Main {
             switch (menu){
                 case "1":
                     // Add Sepatu
-                    if (stock.getStockSepatu().size() >= 10){
-                        penuh();
-                        scan.nextLine();
-                        break;
-                    }
+//                    if (stock.getStockSepatu().size() >= 10){
+//                        penuh();
+//                        scan.nextLine();
+//                        break;
+//                    }
                     System.out.printf("%-18s", "Nama sepatu:");
                     temp_nama = scan.nextLine();
                     System.out.printf("%-18s", "Brand sepatu:");
@@ -61,13 +76,14 @@ public class Main {
                     System.out.printf("%-18s", "Jumlah sepatu:");
                     temp_qty = scan.nextLine();
                     stock.restock(temp_nama, temp_brand, temp_harga, temp_qty);
+                    postgres.insertItem(temp_nama, temp_brand, temp_harga, temp_qty);
                     temp_nama = ""; temp_brand = "";temp_harga = "";temp_qty = ""; // fflush stdin
                     System.out.println("Add Sepatu");
                     break;
                 case "2":
                     // Update Sepatu
                     System.out.println("Update Sepatu");
-                    System.out.printf("Pilih sepatu nomor berapa yang akan di Update? ");
+                    System.out.printf("Pilih nama sepatu yang akan di Update? ");
                     choose_index = scan.nextLine();
                     System.out.printf("%-18s:", "Nama sepatu");
                     temp_nama = scan.nextLine();
@@ -77,15 +93,17 @@ public class Main {
                     temp_harga = scan.nextLine();
                     System.out.printf("%-18s:", "Jumlah sepatu");
                     temp_qty = scan.nextLine();
-                    stock.update_stock(choose_index, temp_nama, temp_brand, temp_harga, temp_qty);
+                    postgres.updateItem(choose_index, temp_nama, temp_brand, temp_harga, temp_qty);
+//                    stock.update_stock(choose_index, temp_nama, temp_brand, temp_harga, temp_qty);
                     choose_index = "";temp_nama = ""; temp_brand = "";temp_harga = "";temp_qty = ""; // fflush stdin
                     break;
                 case "3":
                     // Beli Sepatu
                     System.out.println("Beli Sepatu");
-                    System.out.printf("Pilih sepatu nomor berapa yang akan di Beli? ");
+                    System.out.printf("Pilih nama sepatu yang akan di Beli? ");
                     choose_index = scan.nextLine();
-                    stock.beli(choose_index);
+                    postgres.deleteItem(choose_index);
+//                    stock.beli(choose_index);
                     choose_index = "";
                     break;
                 case "0":
@@ -98,6 +116,7 @@ public class Main {
             }
         }while(!menu.equals("0"));
     }
+
     public static void clrScreen(){
         for(int i = 0 ; i<33; i++){
             System.out.println();
